@@ -1,3 +1,5 @@
+from random import choice
+
 import pygame
 
 from settings import settings
@@ -41,13 +43,49 @@ class Level:
         """Create the map"""
         # Map layouts stored in CSV
         layouts = {
-            "limit": utilities.import_csv_layout("../map/map_FloorBlocks.csv")
+            "limit": utilities.import_csv_layout("../map/map_FloorBlocks.csv"),
+            "object": utilities.import_csv_layout("../map/map_Objects.csv"),
+            "grass": utilities.import_csv_layout("../map/map_Grass.csv")
         }
+        # Graphics of the map
+        graphics = {
+            "grass": utilities.import_folder("../graphics/Grass"),
+            "objects": utilities.import_folder("../graphics/objects")
+        }
+        # Create tiles
+        self._create_all_tiles(graphics, layouts)
+        # Crete the player
+        self.player = Player((2000, 1340), [self.visible_sprites], self.object_sprites)
 
+    def _create_all_tiles(self, graphics, layouts):
+        """Create all tiles with different types"""
         # Go through every layout
         for style, layout in layouts.items():
             # Go through each row of the map
-            for row_index, row in enumerate(settings.MAP):
-                pass
+            for row_index, row in enumerate(layout):
+                # Go through each column of the map
+                for column_index, column in enumerate(row):
+                    # Check if column isn't an empty space
+                    if column != '-1':
+                        # Calculate positions of the tile and create it there
+                        pos_x = column_index * settings.SIZE
+                        pos_y = row_index * settings.SIZE
+                        self._create_tile(pos_x, pos_y, style, column, graphics)
 
-        self.player = Player((2000, 1340), [self.visible_sprites],self.object_sprites)
+    def _create_tile(self, pos_x, pos_y, style, column, graphics):
+        """Create tile at given position, based off style"""
+        # If it's a limit tile, create it and assign it as invisible
+        if style == "limit":
+            Tile((pos_x, pos_y), [self.object_sprites],
+                 "invisible")
+        # Create object
+        if style == "object":
+            image = graphics["objects"][int(column)]
+            Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
+                 "object", image)
+        # Create grass
+        if style == "grass":
+            # Choose a random grass image
+            random_image = choice(graphics["grass"])
+            Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
+                 "grass", random_image)

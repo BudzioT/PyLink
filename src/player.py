@@ -25,6 +25,14 @@ class Player(pygame.sprite.Sprite):
         # Speed
         self.speed = 5
 
+        # Attack variables
+        # Flag
+        self.attack = False
+        # Cooldown
+        self.attack_cooldown = 450
+        # Time
+        self.attack_time = None
+
     def update(self):
         """Update player's position"""
         self.handle_input()
@@ -50,6 +58,18 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 1
         else:
             self.direction.y = 0
+
+        # Physical attack on K or Z
+        if (keys[pygame.K_k] or keys[pygame.K_z]) and not self.attack:
+            # Set attack flag to true and attack time to current one
+            self.attack = True
+            self.attack_time = pygame.time.get_ticks()
+            print("ATTACK")
+        # Magic attack on L or X
+        elif (keys[pygame.K_l] or keys[pygame.K_x]) and not self.attack:
+            # Magic flag and time is same as attack's
+            self.attack = True
+            self.attack_time = pygame.time.get_ticks()
 
     def move(self, speed):
         """Move the player"""
@@ -91,3 +111,7 @@ class Player(pygame.sprite.Sprite):
                     # Top collisions
                     elif self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
+
+    def cooldown(self):
+        """Manipulate the cooldowns"""
+        current_time = pygame.time.get_ticks()

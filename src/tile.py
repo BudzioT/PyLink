@@ -13,9 +13,15 @@ class Tile(pygame.sprite.Sprite):
         # Set the type of sprite
         self.sprite_type = sprite_type
 
-        # Load tile image and get its rect
+        # Load tile image
         self.image = surface
-        self.rect = self.image.get_rect(topleft=pos)
+
+        # If sprite isn't an object, create its rect normally
+        if sprite_type != "object":
+            self.rect = self.image.get_rect(topleft=pos)
+        # Otherwise offset the top position by tile size (objects are 2 times higher than other tiles)
+        else:
+            self.rect = self.image.get_rect(topleft=(pos[0], pos[1] - settings.SIZE))
 
         # Hitbox of the tile
         self.hitbox = self.rect.inflate(0, -10)
