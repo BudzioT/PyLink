@@ -7,6 +7,7 @@ from tile import Tile
 from player import Player
 from camera import YSortCameraGroup
 from utilities import utilities
+from weapon import Weapon
 
 
 class Level:
@@ -20,6 +21,9 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         # Sprites that can be collided with
         self.object_sprites = pygame.sprite.Group()
+
+        # Current active weapon
+        self.active_weapon = None
 
         # Create the map
         self._create_map()
@@ -54,8 +58,9 @@ class Level:
         }
         # Create tiles
         self._create_all_tiles(graphics, layouts)
-        # Crete the player
-        self.player = Player((2000, 1340), [self.visible_sprites], self.object_sprites)
+        # Crete the player and his weapon
+        self.player = Player((2000, 1340), [self.visible_sprites], self.object_sprites,
+                             self._create_weapon, self._destroy_weapon)
 
     def _create_all_tiles(self, graphics, layouts):
         """Create all tiles with different types"""
@@ -89,3 +94,15 @@ class Level:
             random_image = choice(graphics["grass"])
             Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
                  "grass", random_image)
+
+    def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
+        """Create the weapon"""
+        self.active_weapon = Weapon(self.player, [self.visible_sprites])
+
+    def _destroy_weapon(self):
+        """Destroy the weapon"""
+        # If the weapon exists, destroy it
+        if self.active_weapon:
+            self.active_weapon.kill()
+            # Set it back to nothing
+            self.active_weapon = None

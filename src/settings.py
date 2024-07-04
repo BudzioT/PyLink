@@ -17,7 +17,7 @@ class Settings:
         self.BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
         # Weapon information
-        weapon_info = {
+        self.weapon_info = {
             "rapier": {"cooldown": 70, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},
             "sai": {"cooldown": 100, "damage": 10, "graphic": "../graphics/weapons/sai/full.png"},
             "sword": {"cooldown": 130, "damage": 13, "graphic": "../graphics/weapons/sword/full.png"},

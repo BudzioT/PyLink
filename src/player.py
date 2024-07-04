@@ -8,7 +8,7 @@ from utilities import utilities
 
 class Player(pygame.sprite.Sprite):
     """Player class"""
-    def __init__(self, pos, group, object_sprites):
+    def __init__(self, pos, group, object_sprites, create_weapon, destroy_weapon):
         super().__init__(group)
 
         # Load player's image and get its rect
@@ -43,6 +43,23 @@ class Player(pygame.sprite.Sprite):
         self.attack_cooldown = 600
         # Time
         self.attack_time = None
+
+        # Create weapon function reference
+        self.create_weapon = create_weapon
+        # Destroy weapon function reference
+        self.destroy_weapon = destroy_weapon
+
+        # Weapon variables
+        # Current index
+        self.weapon_index = 0
+        # Current weapon
+        self.weapon = list(settings.weapon_info.keys())[self.weapon_index]
+        # Switch flag
+        self.can_weapon_switch = True
+        # Switch cooldown
+        self.weapon_switch_cooldown = 350
+        # Switch time
+        self.weapon_switch_time = None
 
     def update(self):
         """Update player's position"""
@@ -92,12 +109,24 @@ class Player(pygame.sprite.Sprite):
             # Set attack flag to true and attack time to current one
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
-            print("ATTACK")
+            self.create_weapon()
         # Magic attack on L or X
         elif keys[pygame.K_l] or keys[pygame.K_x]:
             # Magic flag and time is same as attack's
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
+
+        # Change weapon to the next one on F or Q
+        if keys[pygame.K_f] or keys[pygame.K_q]:
+            # Make player unable to switch again
+            self.can_weapon_switch = False
+            # Get time of the switch
+            self.weapon_switch_time = pygame.time.get_ticks()
+            if self.weapon_index < len(list(settings.weapon_info.keys())):
+                self.weapon_index += 1
+            # Change the weapon
+            self.weapon_index += 1
+            self.weapon = list(settings.weapon_info.keys())[self.weapon_index]
 
     def _move(self, speed):
         """Move the player"""
@@ -144,11 +173,18 @@ class Player(pygame.sprite.Sprite):
         """Manipulate the cooldowns"""
         current_time = pygame.time.get_ticks()
 
-        # Handle player attacks
+        # Handle player attack cooldown
         if self.attack:
             # If time from the last attack is bigger than the cooldown, allow to attack again
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attack = False
+                self.destroy_weapon()
+        # Handle weapon switch cooldown
+        if not self.can_weapon_switch:
+            # If the time between now and the last switch is bigger than the cooldown
+            if current_time - self.weapon_switch_time >= self.weapon_switch_cooldown:
+                # Allow player to switch the weapon again
+                self.can_weapon_switch = True
 
     def _import_assets(self):
         """Import player's assets"""
@@ -161,7 +197,7 @@ class Player(pygame.sprite.Sprite):
         # Path to player's assets
         path = "../graphics/player"
 
-        # Go through all the animations
+        # Go through all the animations and import them
         for animation in self.animations.keys():
             full_path = path + '/' + animation
             self.animations[animation] = utilities.import_folder(full_path)
