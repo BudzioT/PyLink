@@ -113,7 +113,12 @@ class UI:
         box_rect = self._weapon_box(80, 635, not switch)
 
         # Get magic's surface based off current magic index
-        magic_surface = self.
+        magic_surface = self.magic_graphics[magic_index]
+        # Center it in a weapon magic box
+        magic_rect = magic_surface.get_rect(center=box_rect.center)
+
+        # Blit the spell
+        self.surface.blit(magic_surface, magic_rect)
 
     def _convert_weapon_dict(self):
         """Convert weapons from dictionary to a list"""
@@ -127,4 +132,10 @@ class UI:
 
     def _convert_magic_dict(self):
         """Convert magic spells into a list of loaded images"""
-
+        # Iterate through each of magic's spells
+        for magic in settings.magic_info.values():
+            # Save and load its image
+            path = magic["graphic"]
+            magic = pygame.image.load(os.path.join(settings.BASE_PATH, path)).convert_alpha()
+            # Append it
+            self.magic_graphics.append(magic)

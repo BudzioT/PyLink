@@ -9,6 +9,7 @@ from camera import YSortCameraGroup
 from utilities import utilities
 from weapon import Weapon
 from ui import UI
+from enemy import Enemy
 
 
 class Level:
@@ -55,7 +56,8 @@ class Level:
         layouts = {
             "limit": utilities.import_csv_layout("../map/map_FloorBlocks.csv"),
             "object": utilities.import_csv_layout("../map/map_Objects.csv"),
-            "grass": utilities.import_csv_layout("../map/map_Grass.csv")
+            "grass": utilities.import_csv_layout("../map/map_Grass.csv"),
+            "entities": utilities.import_csv_layout("../map/map_Entities.csv")
         }
         # Graphics of the map
         graphics = {
@@ -64,10 +66,6 @@ class Level:
         }
         # Create tiles
         self._create_all_tiles(graphics, layouts)
-        # Crete the player and his weapon
-        self.player = Player((2000, 1340), [self.visible_sprites], self.object_sprites,
-                             self._create_weapon, self._destroy_weapon,
-                             self._create_magic, self._destroy_magic)
 
     def _create_all_tiles(self, graphics, layouts):
         """Create all tiles with different types"""
@@ -91,16 +89,39 @@ class Level:
             Tile((pos_x, pos_y), [self.object_sprites],
                  "invisible")
         # Create object
-        if style == "object":
+        elif style == "object":
             image = graphics["objects"][int(column)]
             Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
                  "object", image)
         # Create grass
-        if style == "grass":
+        elif style == "grass":
             # Choose a random grass image
             random_image = choice(graphics["grass"])
             Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
                  "grass", random_image)
+        # Create entities
+        elif style == "entities":
+            # If it is a player, put him here
+            if column == "394":
+                # Create the player and his weapon
+                self.player = Player((pos_x, pos_y), [self.visible_sprites], self.object_sprites,
+                                     self._create_weapon, self._destroy_weapon,
+                                     self._create_magic, self._destroy_magic)
+            # Otherwise put an enemy there, based off the ID set the name
+            else:
+                # Bamboo
+                if column == "390":
+                    name = "bamboo"
+                # Spirit
+                elif column == "391":
+                    name = "spirit"
+                # Racoon
+                elif column == "392":
+                    name = "raccoon"
+                # Squid
+                else:
+                    name = "squid"
+                Enemy(name, (pos_x, pos_y), [self.visible_sprites], self.object_sprites)
 
     def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
         """Create the weapon"""
