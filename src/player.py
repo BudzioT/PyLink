@@ -61,6 +61,15 @@ class Player(pygame.sprite.Sprite):
         # Switch time
         self.weapon_switch_time = None
 
+        # Player's stats
+        self.stats = {"health": 100, "energy": 50, "attack": 10, "magic": 4, "speed": 5}
+        # Current player's health and energy and speed
+        self.health = self.stats["health"]
+        self.energy = self.stats["energy"]
+        self.speed = self.stats["speed"]
+        # Current player's experience
+        self.exp = 120
+
     def update(self):
         """Update player's position"""
         # Update player's action
@@ -117,15 +126,19 @@ class Player(pygame.sprite.Sprite):
             self.attack_time = pygame.time.get_ticks()
 
         # Change weapon to the next one on F or Q
-        if keys[pygame.K_f] or keys[pygame.K_q]:
+        if (keys[pygame.K_f] or keys[pygame.K_q]) and self.can_weapon_switch:
             # Make player unable to switch again
             self.can_weapon_switch = False
             # Get time of the switch
             self.weapon_switch_time = pygame.time.get_ticks()
-            if self.weapon_index < len(list(settings.weapon_info.keys())):
+
+            # If weapon index is still less than amount of weapons, increase it
+            if self.weapon_index < len(list(settings.weapon_info.keys())) - 1:
                 self.weapon_index += 1
+            # Otherwise just reset it to 0
+            else:
+                self.weapon_index = 0
             # Change the weapon
-            self.weapon_index += 1
             self.weapon = list(settings.weapon_info.keys())[self.weapon_index]
 
     def _move(self, speed):

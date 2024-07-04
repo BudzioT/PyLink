@@ -16,6 +16,25 @@ class Settings:
         # Base file path
         self.BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
+        # User's interface settings
+        self.BAR_HEIGHT = 20
+        self.FONT = "../graphics/font/joystix.ttf"
+        self.FONT_SIZE = 18
+        self.HEALTH_BAR_WIDTH = 200
+        self.ENERGY_BAR_WIDTH = 140
+        self.BOX_SIZE = 80
+        # Colors
+        self.BORDER_ACTIVE_COLOR = "yellow"
+        self.HEALTH_COLOR = "red"
+        self.ENERGY_COLOR = "blue"
+
+        # General colors
+        self.WATER_COLOR = "#71DDEE"
+        self.BG_COLOR = "#222222"
+        self.TEXT_COLOR = "#EEEEEE"
+        self.BORDER_COLOR = "silver"
+
+
         # Weapon information
         self.weapon_info = {
             "rapier": {"cooldown": 70, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},

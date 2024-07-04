@@ -8,6 +8,7 @@ from player import Player
 from camera import YSortCameraGroup
 from utilities import utilities
 from weapon import Weapon
+from ui import UI
 
 
 class Level:
@@ -25,6 +26,9 @@ class Level:
         # Current active weapon
         self.active_weapon = None
 
+        # User's interface
+        self.ui = UI()
+
         # Create the map
         self._create_map()
 
@@ -34,6 +38,8 @@ class Level:
         self._draw()
         # Update positions
         self._update()
+        # Display player's statistics
+        self.ui.display(self.player)
 
     def _draw(self):
         # Draw all level objects
@@ -105,4 +111,4 @@ class Level:
         if self.active_weapon:
             self.active_weapon.kill()
             # Set it back to nothing
-            self.active_weapon = None
+        self.active_weapon = None
