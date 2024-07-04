@@ -49,6 +49,8 @@ class Level:
     def _update(self):
         # Update positions of the level objects
         self.visible_sprites.update()
+        # Update positions of the enemies
+        self.visible_sprites.enemy_update(self.player)
 
     def _create_map(self):
         """Create the map"""
