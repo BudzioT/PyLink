@@ -13,6 +13,6 @@ class Tile(pygame.sprite.Sprite):
         self.settings = Settings()
 
         # Load tile image and get its rect
-        self.image = (
-            pygame.image.load(os.path.join(self.settings.BASE_PATH, "")).convert_alpha())
+        self.image = pygame.image.load(os.path.join(self.settings.BASE_PATH,
+                                                    "../graphics/test/rock.png")).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)

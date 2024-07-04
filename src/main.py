@@ -28,6 +28,8 @@ class Game:
             self._get_events()
             # Draw everything
             self._update_surface()
+            # Update objects
+            self._update_objects()
             # Remain set amount of FPS
             self.timer.tick(self.settings.FPS)
 
@@ -42,12 +44,13 @@ class Game:
         """Update the main surface, draw objects"""
         # Clean the screen
         self.screen.fill("black")
+        # Draw the level and update it
+        self.level.run()
         # Update the main surface
         pygame.display.update()
 
     def _update_objects(self):
         """Update all the objects"""
-        self.level.run()
 
 
 # If file is main, run the game
