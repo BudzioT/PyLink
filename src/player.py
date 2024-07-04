@@ -8,7 +8,8 @@ from utilities import utilities
 
 class Player(pygame.sprite.Sprite):
     """Player class"""
-    def __init__(self, pos, group, object_sprites, create_weapon, destroy_weapon):
+    def __init__(self, pos, group, object_sprites, create_weapon, destroy_weapon,
+                 create_magic, destroy_magic):
         super().__init__(group)
 
         # Load player's image and get its rect
@@ -49,6 +50,10 @@ class Player(pygame.sprite.Sprite):
         # Destroy weapon function reference
         self.destroy_weapon = destroy_weapon
 
+        # Create and destroy magic function references
+        self.create_magic = create_magic
+        self.destroy_magic = destroy_magic
+
         # Weapon variables
         # Current index
         self.weapon_index = 0
@@ -57,9 +62,21 @@ class Player(pygame.sprite.Sprite):
         # Switch flag
         self.can_weapon_switch = True
         # Switch cooldown
-        self.weapon_switch_cooldown = 350
+        self.weapon_switch_cooldown = 400
         # Switch time
         self.weapon_switch_time = None
+
+        # Magic variables
+        # Current index
+        self.magic_index = 0
+        # List of magic spells
+        self.magic = list(settings.magic_info.keys())[self.magic_index]
+        # Switch flag
+        self.can_magic_switch = True
+        # Spell switching cooldown
+        self.magic_switch_cooldown = 500
+        # Last magic used time
+        self.magic_switch_time = None
 
         # Player's stats
         self.stats = {"health": 100, "energy": 50, "attack": 10, "magic": 4, "speed": 5}
@@ -119,11 +136,20 @@ class Player(pygame.sprite.Sprite):
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
             self.create_weapon()
+
         # Magic attack on L or X
         elif keys[pygame.K_l] or keys[pygame.K_x]:
             # Magic flag and time is same as attack's
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
+
+            # Get magic's style (name), strength and cost
+            style = list(settings.magic_info.keys())[self.magic_index]
+            strength = settings.magic_info[style]["strength"] + self.stats["magic"]
+            cost = settings.magic_info[style]["strength"]
+
+            # Create the magic
+            self.create_magic(style, strength, cost)
 
         # Change weapon to the next one on F or Q
         if (keys[pygame.K_f] or keys[pygame.K_q]) and self.can_weapon_switch:
@@ -140,6 +166,21 @@ class Player(pygame.sprite.Sprite):
                 self.weapon_index = 0
             # Change the weapon
             self.weapon = list(settings.weapon_info.keys())[self.weapon_index]
+
+        # Change magic with E or C
+        if (keys[pygame.K_e] or keys[pygame.K_c]) and self.can_magic_switch:
+            # Change player's ability to change magic to False, save the time
+            self.can_magic_switch = False
+            self.magic_switch_time = pygame.time.get_ticks()
+
+            # If index is still in bound, increment it
+            if self.magic_index < len(list(settings.magic_info.keys())) - 1:
+                self.magic_index += 1
+            # Otherwise move it down to 0
+            else:
+                self.magic_index = 0
+            # Change the magic
+            self.magic = list(settings.magic_info.keys())[self.magic_index]
 
     def _move(self, speed):
         """Move the player"""
@@ -192,12 +233,19 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attack = False
                 self.destroy_weapon()
+
         # Handle weapon switch cooldown
         if not self.can_weapon_switch:
             # If the time between now and the last switch is bigger than the cooldown
             if current_time - self.weapon_switch_time >= self.weapon_switch_cooldown:
                 # Allow player to switch the weapon again
                 self.can_weapon_switch = True
+
+        # Handle magic switch cooldown
+        if not self.can_magic_switch:
+            # If magic cooldown has passed, allow the player to use it again
+            if current_time - self.magic_switch_time >= self.magic_switch_cooldown:
+                self.can_magic_switch = True
 
     def _import_assets(self):
         """Import player's assets"""

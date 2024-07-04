@@ -66,7 +66,8 @@ class Level:
         self._create_all_tiles(graphics, layouts)
         # Crete the player and his weapon
         self.player = Player((2000, 1340), [self.visible_sprites], self.object_sprites,
-                             self._create_weapon, self._destroy_weapon)
+                             self._create_weapon, self._destroy_weapon,
+                             self._create_magic, self._destroy_magic)
 
     def _create_all_tiles(self, graphics, layouts):
         """Create all tiles with different types"""
@@ -112,3 +113,10 @@ class Level:
             self.active_weapon.kill()
             # Set it back to nothing
         self.active_weapon = None
+
+    def _create_magic(self, style, strength, cost):
+        """Create the magic spell"""
+        pass
+
+    def _destroy_magic(self):
+        """Destroy the magic spell"""

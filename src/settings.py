@@ -34,7 +34,6 @@ class Settings:
         self.TEXT_COLOR = "#EEEEEE"
         self.BORDER_COLOR = "silver"
 
-
         # Weapon information
         self.weapon_info = {
             "rapier": {"cooldown": 70, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},
@@ -42,6 +41,12 @@ class Settings:
             "sword": {"cooldown": 130, "damage": 13, "graphic": "../graphics/weapons/sword/full.png"},
             "lance": {"cooldown": 360, "damage": 20, "graphic": "../graphics/weapons/lance/full.png"},
             "axe": {"cooldown": 470, "damage": 28, "graphic": "../graphics/weapons/axe/full.png"}
+        }
+
+        # Information about magic
+        self.magic_info = {
+            "flame": {"strength": 5, "cost": 25, "graphic": "../graphics/particles/flame/fire.png"},
+            "heal": {"strength": 15, "cost": 15, "graphic": "../graphics/particles/heal/heal.png"}
         }
 
 

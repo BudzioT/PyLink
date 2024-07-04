@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 from settings import settings
@@ -17,6 +19,14 @@ class UI:
         self.health_bar_rect = pygame.Rect(10, 10, settings.HEALTH_BAR_WIDTH, settings.BAR_HEIGHT)
         self.energy_bar_rect = pygame.Rect(10, 34, settings.ENERGY_BAR_WIDTH, settings.BAR_HEIGHT)
 
+        # Get weapon graphics as a list of loaded images
+        self.weapon_graphics = []
+        self._convert_weapon_dict()
+
+        # Get list of loaded magic's images
+        self.magic_graphics = []
+        self._convert_magic_dict()
+
     def display(self, player):
         """Display the player's statistics"""
         # Show the health and energy bars
@@ -25,6 +35,11 @@ class UI:
 
         # Show player's experience
         self._show_exp(player.exp)
+
+        # Show the melee weapon box
+        self._weapon_overlay(player.weapon_index, not player.can_weapon_switch)
+        # Show the magic box
+        self._magic_overlay(player.magic_index, not player.can_magic_switch)
 
     def _show_bar(self, current_amount, max_amount, bg_rect, color):
         """Show a bar with given information"""
@@ -61,8 +76,55 @@ class UI:
         # Draw the frame
         pygame.draw.rect(self.surface, settings.BORDER_COLOR, text_rect.inflate(10, 10), 3)
 
-    def weapon_box(self, left, top):
+    def _weapon_box(self, left, top, switch):
         """Draw a weapon box"""
         # Get rectangle of box
         box_rect = pygame.Rect(left, top, settings.BOX_SIZE, settings.BOX_SIZE)
-        
+        # Draw the background
+        pygame.draw.rect(self.surface, settings.BG_COLOR, box_rect)
+
+        # Draw the frame with color based off if the player is currently changing weapon
+        # If the player has switched weapon, draw it in active color
+        if switch:
+            pygame.draw.rect(self.surface, settings.BORDER_ACTIVE_COLOR, box_rect, 3)
+        # Otherwise, draw it in the normal color
+        else:
+            pygame.draw.rect(self.surface, settings.BORDER_COLOR, box_rect, 3)
+
+        # Return the box's rectangle
+        return box_rect
+
+    def _weapon_overlay(self, weapon_index, switch):
+        """Display proper weapon in the box"""
+        # Show the melee weapon box and get its rectangle
+        box_rect = self._weapon_box(10, 630, switch)
+
+        # Get the weapon's surface from a list based off current weapon index
+        weapon_surface = self.weapon_graphics[weapon_index]
+        # Place it at the center of the weapon box
+        weapon_rect = weapon_surface.get_rect(center=box_rect.center)
+
+        # Blit the weapon onto the main surface
+        self.surface.blit(weapon_surface, weapon_rect)
+
+    def _magic_overlay(self, magic_index, switch):
+        """Display the correct magic in magic's box"""
+        # Draw the magic's box rectangle and save it
+        box_rect = self._weapon_box(80, 635, not switch)
+
+        # Get magic's surface based off current magic index
+        magic_surface = self.
+
+    def _convert_weapon_dict(self):
+        """Convert weapons from dictionary to a list"""
+        # Go through each weapon
+        for weapon in settings.weapon_info.values():
+            # Grab its image path and load it
+            path = weapon["graphic"]
+            weapon = pygame.image.load(os.path.join(settings.BASE_PATH, path)).convert_alpha()
+            # Add it to the list
+            self.weapon_graphics.append(weapon)
+
+    def _convert_magic_dict(self):
+        """Convert magic spells into a list of loaded images"""
+
