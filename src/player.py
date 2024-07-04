@@ -1,7 +1,9 @@
 import os
 
 import pygame
+
 from settings import settings
+from utilities import utilities
 
 
 class Player(pygame.sprite.Sprite):
@@ -13,6 +15,15 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.path.join(settings.BASE_PATH,
                                                     "../graphics/test/player.png")).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
+
+        # Import player's assets
+        self._import_assets()
+        # Set player's state
+        self.state = "down"
+        # Current frame
+        self.frame = 0
+        # Speed of the animation
+        self.animation_speed = 0.1
 
         # Hitbox of the player
         self.hitbox = self.rect.inflate(0, -26)
@@ -29,49 +40,66 @@ class Player(pygame.sprite.Sprite):
         # Flag
         self.attack = False
         # Cooldown
-        self.attack_cooldown = 450
+        self.attack_cooldown = 600
         # Time
         self.attack_time = None
 
     def update(self):
         """Update player's position"""
-        self.handle_input()
-        self.move(self.speed)
+        # Update player's action
+        self._handle_input()
+        # Check the cooldowns
+        self._cooldown()
 
-    def handle_input(self):
+        # Set state of the player
+        self._set_state()
+        # Animate the player
+        self._animate()
+
+        # Move the player
+        self._move(self.speed)
+
+    def _handle_input(self):
         """Set player's action based off input"""
+        # If player is attacking, don't handle inputs
+        if self.attack:
+            return
         # Get keys pressed
         keys = pygame.key.get_pressed()
 
         # Horizontal movement
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
+            self.state = "left"
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
+            self.state = "right"
         else:
             self.direction.x = 0
 
         # Vertical movement
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.direction.y = -1
+            self.state = "up"
         elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.direction.y = 1
+            self.state = "down"
         else:
             self.direction.y = 0
 
         # Physical attack on K or Z
-        if (keys[pygame.K_k] or keys[pygame.K_z]) and not self.attack:
+        if keys[pygame.K_k] or keys[pygame.K_z]:
             # Set attack flag to true and attack time to current one
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
             print("ATTACK")
         # Magic attack on L or X
-        elif (keys[pygame.K_l] or keys[pygame.K_x]) and not self.attack:
+        elif keys[pygame.K_l] or keys[pygame.K_x]:
             # Magic flag and time is same as attack's
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
 
-    def move(self, speed):
+    def _move(self, speed):
         """Move the player"""
         # Normalize the direction if player moves, to prevent speed up
         if self.direction.magnitude() != 0:
@@ -79,14 +107,14 @@ class Player(pygame.sprite.Sprite):
 
         # Move the player, check the collisions
         self.hitbox.x += self.direction.x * speed
-        self.collision("horizontal")
+        self._collision("horizontal")
         self.hitbox.y += self.direction.y * speed
-        self.collision("vertical")
+        self._collision("vertical")
 
         # Apply hitbox position
         self.rect.center = self.hitbox.center
 
-    def collision(self, direction):
+    def _collision(self, direction):
         """Handle player's collisions"""
         # Handle horizontal collisions
         if direction == "horizontal":
@@ -112,6 +140,69 @@ class Player(pygame.sprite.Sprite):
                     elif self.direction.y < 0:
                         self.hitbox.top = sprite.hitbox.bottom
 
-    def cooldown(self):
+    def _cooldown(self):
         """Manipulate the cooldowns"""
         current_time = pygame.time.get_ticks()
+
+        # Handle player attacks
+        if self.attack:
+            # If time from the last attack is bigger than the cooldown, allow to attack again
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.attack = False
+
+    def _import_assets(self):
+        """Import player's assets"""
+        # List of player's animations
+        self.animations = {
+            "up": [], "down": [], "left": [], "right": [], "right_idle": [], "left_idle": [],
+            "up_idle": [], "down_idle": [], "right_attack": [], "left_attack": [], "up_attack": [],
+            "down_attack": []
+        }
+        # Path to player's assets
+        path = "../graphics/player"
+
+        # Go through all the animations
+        for animation in self.animations.keys():
+            full_path = path + '/' + animation
+            self.animations[animation] = utilities.import_folder(full_path)
+
+    def _set_state(self):
+        """Set state of the player"""
+        # If player isn't moving
+        if self.direction.x == 0 and self.direction.y == 0:
+            # If player's state isn't idle already, set it to the correct idle one
+            if ("idle" not in self.state) and ("attack" not in self.state):
+                self.state = self.state + "_idle"
+
+        # If player is attacking
+        if self.attack:
+            # Stop him from moving
+            self.direction.x, self.direction.y = 0, 0
+            # If animation isn't attack one yet
+            if "attack" not in self.state:
+                # If it was idle, replace idle with attack to get correct attack direction
+                if "idle" in self.state:
+                    self.state = self.state.replace("idle", "attack")
+                # Else - player just moved, just add attack to the direction
+                else:
+                    self.state = self.state + "_attack"
+        # If player isn't attacking
+        else:
+            # If he was attacking before, remove the attack animation
+            if "attack" in self.state:
+                self.state = self.state.replace("attack", "idle")
+
+    def _animate(self):
+        """Animate the player"""
+        # Get the current animation based off state
+        animation = self.animations[self.state]
+
+        # Move the frame
+        self.frame += self.animation_speed
+        # If the current frame is now higher than numbers of animation frames, reset it
+        if self.frame >= len(animation):
+            self.frame = 0
+
+        # Set the image and update the rectangle
+        self.image = animation[int(self.frame)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)
