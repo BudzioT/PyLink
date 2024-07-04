@@ -1,8 +1,10 @@
 import pygame
 
-from settings import Settings
+from settings import settings
 from tile import Tile
 from player import Player
+from camera import YSortCameraGroup
+from utilities import utilities
 
 
 class Level:
@@ -11,11 +13,9 @@ class Level:
         """Initialize the level"""
         # Get game's display
         self.surface = pygame.display.get_surface()
-        # Grab game's settings
-        self.settings = Settings()
 
         # Sprites that are visible
-        self.visible_sprites = pygame.sprite.Group()
+        self.visible_sprites = YSortCameraGroup()
         # Sprites that can be collided with
         self.object_sprites = pygame.sprite.Group()
 
@@ -31,7 +31,7 @@ class Level:
 
     def _draw(self):
         # Draw all level objects
-        self.visible_sprites.draw(self.surface)
+        self.visible_sprites.special_draw(self.player)
 
     def _update(self):
         # Update positions of the level objects
@@ -39,17 +39,15 @@ class Level:
 
     def _create_map(self):
         """Create the map"""
-        # Go through each row of the map
-        for index_row, row in enumerate(self.settings.MAP):
-            # Go through each column of the map
-            for index_column, column in enumerate(row):
-                # Get its position
-                pos_x = index_column * self.settings.SIZE
-                pos_y = index_row * self.settings.SIZE
-                # If it's an object, create sprite tile with it
-                if column == 'x':
-                    Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites])
-                # If it's a player, create sprite of him
-                elif column == 'p':
-                    self.player = Player((pos_x, pos_y), [self.visible_sprites],
-                                         self.object_sprites)
+        # Map layouts stored in CSV
+        layouts = {
+            "limit": utilities.import_csv_layout("../map/map_FloorBlocks.csv")
+        }
+
+        # Go through every layout
+        for style, layout in layouts.items():
+            # Go through each row of the map
+            for row_index, row in enumerate(settings.MAP):
+                pass
+
+        self.player = Player((2000, 1340), [self.visible_sprites],self.object_sprites)

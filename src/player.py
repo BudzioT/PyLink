@@ -1,19 +1,21 @@
 import os
 
 import pygame
-from settings import Settings
+from settings import settings
 
 
 class Player(pygame.sprite.Sprite):
     """Player class"""
     def __init__(self, pos, group, object_sprites):
         super().__init__(group)
-        # Get settings of the game
-        self.settings = Settings()
+
         # Load player's image and get its rect
-        self.image = pygame.image.load(os.path.join(self.settings.BASE_PATH,
+        self.image = pygame.image.load(os.path.join(settings.BASE_PATH,
                                                     "../graphics/test/player.png")).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
+
+        # Hitbox of the player
+        self.hitbox = self.rect.inflate(0, -26)
 
         # Get object sprites
         self.object_sprites = object_sprites
@@ -55,10 +57,14 @@ class Player(pygame.sprite.Sprite):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
 
-        # Move the player
-        self.rect.x += self.direction.x * speed
-        self.rect.y += self.direction.y * speed
-        self.rect.center += self.direction * speed
+        # Move the player, check the collisions
+        self.hitbox.x += self.direction.x * speed
+        self.collision("horizontal")
+        self.hitbox.y += self.direction.y * speed
+        self.collision("vertical")
+
+        # Apply hitbox position
+        self.rect.center = self.hitbox.center
 
     def collision(self, direction):
         """Handle player's collisions"""
@@ -66,22 +72,22 @@ class Player(pygame.sprite.Sprite):
         if direction == "horizontal":
             # Go through each object sprite, check collisions
             for sprite in self.object_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     # Right collisions (if player moves right, there can't be left collision)
                     if self.direction.x > 0:
                         # Hug the player to the wall
-                        self.rect.right = sprite.rect.left
+                        self.hitbox.right = sprite.hitbox.left
                     # Left collisions
                     elif self.direction.x < 0:
-                        self.rect.left = sprite.rect.right
+                        self.hitbox.left = sprite.hitbox.right
 
         # Handle vertical collisions
         if direction == "vertical":
             for sprite in self.object_sprites:
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hitbox.colliderect(self.hitbox):
                     # Bottom collisions
                     if self.direction.y > 0:
-                        self.rect.bottom = sprite.rect.top
+                        self.hitbox.bottom = sprite.hitbox.top
                     # Top collisions
                     elif self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+                        self.hitbox.top = sprite.hitbox.bottom

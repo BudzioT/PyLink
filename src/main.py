@@ -1,6 +1,6 @@
 import pygame, sys
 
-from settings import Settings
+from settings import settings
 from level import Level
 
 
@@ -9,10 +9,8 @@ class Game:
     def __init__(self):
         """Initialize the game"""
         pygame.init()
-        # Get the settings
-        self.settings = Settings()
         # Set up main surface
-        self.screen = pygame.display.set_mode((self.settings.WIDTH, self.settings.HEIGHT))
+        self.screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
         pygame.display.set_caption("PyZelda")
 
         # Level of the game
@@ -31,7 +29,7 @@ class Game:
             # Update objects
             self._update_objects()
             # Remain set amount of FPS
-            self.timer.tick(self.settings.FPS)
+            self.timer.tick(settings.FPS)
 
     def _get_events(self):
         """Get and handle input events"""

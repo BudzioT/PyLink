@@ -1,18 +1,21 @@
 import os
 
 import pygame
-from settings import Settings
+from settings import settings
 
 
 class Tile(pygame.sprite.Sprite):
     """Tiles that can be placed in a level"""
-    def __init__(self, pos, group):
+    def __init__(self, pos, group, sprite_type, surface=pygame.Surface((settings.SIZE, settings.SIZE))):
         """Initialize the tile"""
         super().__init__(group)
-        # Get the game's settings
-        self.settings = Settings()
+
+        # Set the type of sprite
+        self.sprite_type = sprite_type
 
         # Load tile image and get its rect
-        self.image = pygame.image.load(os.path.join(self.settings.BASE_PATH,
-                                                    "../graphics/test/rock.png")).convert_alpha()
+        self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
+
+        # Hitbox of the tile
+        self.hitbox = self.rect.inflate(0, -10)
