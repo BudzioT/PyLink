@@ -1,3 +1,5 @@
+from random import choice
+
 import pygame
 
 from utilities import utilities
@@ -13,9 +15,11 @@ class Particle(pygame.sprite.Sprite):
         self.frames = frames
         self.frame = 0
         # Animation speed
-        self.animation_speed = 0.1
+        self.animation_speed = 0.15
         # Image based off current frame
         self.image = self.frames[self.frame]
+        # Rectangle of particle
+        self.rect = self.image.get_rect(center=pos)
 
     def update(self):
         """Update the particle"""
@@ -40,6 +44,20 @@ class Animation:
         # Load and store all the animations, that aren't loaded already
         self.frames = {}
         self._load_frames()
+
+    def grass_particles(self, pos, group):
+        """Create grass particles, animate them"""
+        # Get random leaf animation type
+        animation_frames = choice(self.frames["leaf"])
+        # Create the particle animation
+        Particle(pos, group, animation_frames)
+
+    def create_particles(self, attack_type, pos, group):
+        """Create and animate particles"""
+        # Get animation type based off attack type
+        animation_frames = self.frames[attack_type]
+        # Create particle animation
+        Particle(pos, group, animation_frames)
 
     def reflect_images(self, frames):
         """Reflect the images"""
@@ -75,7 +93,7 @@ class Animation:
             "bamboo": utilities.import_folder("../graphics/particles/bamboo"),
 
             # Leafs
-            "leaf": {
+            "leaf": (
                 utilities.import_folder("../graphics/particles/leaf1"),
                 utilities.import_folder("../graphics/particles/leaf2"),
                 utilities.import_folder("../graphics/particles/leaf3"),
@@ -89,5 +107,5 @@ class Animation:
                 self.reflect_images(utilities.import_folder("../graphics/particles/leaf4")),
                 self.reflect_images(utilities.import_folder("../graphics/particles/leaf5")),
                 self.reflect_images(utilities.import_folder("../graphics/particles/leaf6"))
-            }
+            )
         }

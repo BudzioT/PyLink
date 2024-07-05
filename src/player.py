@@ -101,6 +101,9 @@ class Player(Entity):
         # Animate the player
         self._animate()
 
+        # Recover the energy
+        self._recover_energy()
+
         # Move the player
         self._move(self.speed)
 
@@ -262,6 +265,15 @@ class Player(Entity):
             # If he was attacking before, remove the attack animation
             if "attack" in self.state:
                 self.state = self.state.replace("attack", "idle")
+
+    def _recover_energy(self):
+        """Handle recovering energy"""
+        # Recover the energy if it's not full yet
+        if self.energy < self.stats["energy"]:
+            self.energy += 0.01 * self.stats["magic"]
+        # Otherwise just keep it full
+        else:
+            self.energy = self.stats["energy"]
 
     def _animate(self):
         """Animate the player"""

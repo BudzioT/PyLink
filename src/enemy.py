@@ -7,7 +7,7 @@ from utilities import utilities
 
 class Enemy(Entity):
     """Enemy class"""
-    def __init__(self, name, pos, group, object_sprites, damage_player):
+    def __init__(self, name, pos, group, object_sprites, damage_player, death_particles):
         """Initialize the enemy"""
         super().__init__(group)
 
@@ -60,6 +60,9 @@ class Enemy(Entity):
 
         # Get the function to damage player
         self.damage_player = damage_player
+
+        # Get the function reference to trigger particles on death
+        self.death_particles = death_particles
 
     def update(self):
         """Update the enemy"""
@@ -146,7 +149,11 @@ class Enemy(Entity):
     def death(self):
         """Check for death and handle it"""
         if self.health <= 0:
+            # Kill the enemy
             self.kill()
+
+            # Create particles
+            self.death_particles(self.rect.center, self.name)
 
     def react_on_damage(self):
         """React when getting damaged"""
