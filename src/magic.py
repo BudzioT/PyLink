@@ -45,9 +45,18 @@ class Magic:
     def energy_ball(self, player, cost, group):
         """Place an energy ball"""
         # Place it if player has enough energy
-        if player.energy >= cost:
+        if player.energy >= cost and len(player.energy_balls) < 3:
             # Decrease player's energy
             player.energy -= cost
+
+            # Create the energy ball
+            ball = EnergyBall(player.rect.center, group)
+
+            # Add it to the visible group
+            self.visible_sprites
+
+            # Place the energy ball
+            player.energy_balls.append(ball)
 
     def flame(self, player, cost, group):
         """Flame spell, attack the enemy with flame"""
@@ -94,3 +103,15 @@ class Magic:
                     pos_y = player.rect.centery + offset_y + curve_offset
                     # Create flame vertically
                     self.animations.create_particles("flame", (pos_x, pos_y), group)
+
+
+class EnergyBall:
+    """Energy ball magic spell"""
+    def __init__(self, pos, group):
+        """Initialize the energy ball"""
+        # Set its position
+        self.pos = pos
+        # Set the group
+        self.group = group
+        # Name
+        self.name = "energy_ball"

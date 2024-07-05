@@ -54,6 +54,12 @@ class Animation:
             self.frames["shield"][num] = pygame.transform.scale(frame, (frame.get_rect().width * 3,
                                                                         frame.get_rect().height * 3))
 
+        # Increase energy ball size by 4 times
+        for num in range(len(self.frames["energy_ball"])):
+            frame = self.frames["energy_ball"][num]
+            self.frames["energy_ball"][num] = pygame.transform.scale(frame, (frame.get_rect().width * 4,
+                                                                        frame.get_rect().height * 4))
+
     def grass_particles(self, pos, group):
         """Create grass particles, animate them"""
         # Get random leaf animation type

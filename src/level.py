@@ -161,7 +161,7 @@ class Level:
                 Enemy(name, (pos_x, pos_y), [self.visible_sprites, self.damageable_sprites],
                       self.object_sprites, self._damage_player, self._death_particles, self._increase_exp)
 
-    def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
+    def _create_weapon(self):
         """Create the weapon"""
         self.active_weapon = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
 
@@ -184,6 +184,9 @@ class Level:
         # Use the shield spell
         if style == "shield":
             self.magic.shield(self.player, cost, [self.visible_sprites])
+        # Use the energy ball
+        if style == "energy_ball":
+            self.magic.energy_ball(self.player, cost, [self.visible_sprites, self.attack_sprites])
 
     def _destroy_magic(self):
         """Destroy the magic spell"""
@@ -214,6 +217,20 @@ class Level:
 
                             # Destroy the grass
                             target.kill()
+
+                        # If enemy got hit by an energy ball
+                        elif target.sprite_type == "enemy" and attack_sprite.sprite_type == "energy_ball":
+                            # Create particles
+                            self.animations.create_particles("energy_ball", attack_sprite.rect.center,
+                                                             [self.visible_sprites])
+                            # Destroy the energy ball
+                            attack_sprite.kill()
+                            # Remove the old energy ball
+                            self.player.energy_balls.remove(attack_sprite)
+
+                            # Damage the enemy
+                            target.get_damage(self.player, attack_sprite.sprite_type)
+
                         # If it's an enemy, damage him
                         else:
                             target.get_damage(self.player, attack_sprite.sprite_type)

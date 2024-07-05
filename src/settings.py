@@ -34,8 +34,15 @@ class Settings:
         self.TEXT_COLOR = "#EEEEEE"
         self.BORDER_COLOR = "silver"
 
+        # Upgrade menu colors
+        self.TEXT_SELECT_COLOR = "#1f1e1e"
+        self.BAR_COLOR = "#dbd7d7"
+        self.BAR_SELECT_COLOR = "#1f1e1e"
+        self.UPGRADE_SELECT_BG_COLOR = "#dbd7d7"
+
         # Weapon information
         self.weapon_info = {
+            "stick": {"cooldown": 140, "damage": 5, "graphic": "../graphics/weapons/stick/full.png"},
             "rapier": {"cooldown": 70, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},
             "sai": {"cooldown": 100, "damage": 10, "graphic": "../graphics/weapons/sai/full.png"},
             "sword": {"cooldown": 130, "damage": 13, "graphic": "../graphics/weapons/sword/full.png"},

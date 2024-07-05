@@ -76,6 +76,11 @@ class Player(Entity):
         # Shield count
         self.shield = 3
 
+        # Energy balls list
+        self.energy_balls = []
+        # Their limit
+        self.energy_balls_limit = 3
+
         # Cost of upgrading player's stats
         self.upgrade_cost = {"health": 120, "energy": 100, "attack": 150, "magic": 100, "speed": 100}
 
