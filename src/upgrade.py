@@ -17,6 +17,9 @@ class UpgradeMenu:
         # Names of attributes
         self.attribute_names = list(player.stats.keys())
 
+        # Max statistics values
+        self.max_values = list(player.max_stats.values())
+
         # Font
         self.font = pygame.font.Font(settings.FONT, settings.FONT_SIZE)
 
@@ -42,8 +45,13 @@ class UpgradeMenu:
         self._select_cooldown()
 
         # Draw the menu items
-        for item in self.item_list:
-            item.display(self.surface, self.select_index, "test", 1, 2, 3)
+        for index, item in enumerate(self.item_list):
+            name = self.attribute_names[index]
+            value = self.player.get_value(index)
+            max_value = self.max_values[index]
+            cost = self.player.get_cost(index)
+
+            item.display(self.surface, self.select_index, name, value, max_value, cost)
 
     def _handle_input(self):
         """Handle the input"""
@@ -113,3 +121,18 @@ class Item:
         """Display the item with certain information"""
         # Draw the background
         pygame.draw.rect(surface, settings.BG_COLOR, self.rect)
+
+        # Display the text
+        self.display_text(surface, name, cost, selection_number)
+
+    def display_text(self, surface, name, cost, select):
+        """Display all the text"""
+        # Get statistic title text image and rectangle
+        title_surface = self.font.render(name, False, settings.TEXT_COLOR)
+        title_rect = title_surface.get_rect(midtop=self.rect.midtop + pygame.math.Vector2(0, 20))
+
+        # Get its cost and cost's rect
+        cost_surface = self.font.render(f"{int(cost)}", False, settings.TEXT_COLOR)
+
+        # Draw the text
+        surface.blit(title_surface, title_rect)

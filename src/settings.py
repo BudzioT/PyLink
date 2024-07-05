@@ -43,20 +43,22 @@ class Settings:
         # Weapon information
         self.weapon_info = {
             "stick": {"cooldown": 140, "damage": 5, "graphic": "../graphics/weapons/stick/full.png"},
-            "rapier": {"cooldown": 70, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},
-            "sai": {"cooldown": 100, "damage": 10, "graphic": "../graphics/weapons/sai/full.png"},
-            "sword": {"cooldown": 130, "damage": 13, "graphic": "../graphics/weapons/sword/full.png"},
-            "lance": {"cooldown": 360, "damage": 20, "graphic": "../graphics/weapons/lance/full.png"},
+            "fork": {"cooldown": 130, "damage": 6, "graphic": "../graphics/weapons/fork/full.png"},
+            "rapier": {"cooldown": 90, "damage": 7, "graphic": "../graphics/weapons/rapier/full.png"},
+            "sai": {"cooldown": 130, "damage": 10, "graphic": "../graphics/weapons/sai/full.png"},
+            "sword": {"cooldown": 140, "damage": 13, "graphic": "../graphics/weapons/sword/full.png"},
+            "lance": {"cooldown": 370, "damage": 20, "graphic": "../graphics/weapons/lance/full.png"},
             "axe": {"cooldown": 470, "damage": 28, "graphic": "../graphics/weapons/axe/full.png"}
         }
 
         # Information about magic
         self.magic_info = {
-            "flame": {"strength": 5, "cost": 15, "graphic": "../graphics/particles/flame/fire.png"},
+            "flame": {"strength": 10, "cost": 15, "graphic": "../graphics/particles/flame/fire.png"},
             "heal": {"strength": 15, "cost": 15, "graphic": "../graphics/particles/heal/heal.png"},
-            "energy_ball": {"strength": 20, "cost": 10,
+            "energy_ball": {"strength": 50, "cost": 10,
                             "graphic": "../graphics/particles/energy_ball/energy_ball.png"},
-            "shield": {"strength": 15, "cost": 20, "graphic": "../graphics/particles/shield/shield.png"}
+            "shield": {"strength": 15, "cost": 20, "graphic": "../graphics/particles/shield/shield.png"},
+            "spark": {"strength": 10, "cost": 20, "graphic": "../graphics/particles/spark/spark.png"}
         }
 
         # Information about enemies

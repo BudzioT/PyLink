@@ -102,6 +102,7 @@ class Animation:
             "aura": utilities.import_folder("../graphics/particles/aura"),
             "energy_ball": utilities.import_folder("../graphics/particles/energy_ball/frames"),
             "shield": utilities.import_folder("../graphics/particles/shield/frames"),
+            "spark": utilities.import_folder("../graphics/particles/spark/frames"),
 
             # Monster kill
             "squid": utilities.import_folder("../graphics/particles/smoke_orange"),

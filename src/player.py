@@ -76,8 +76,8 @@ class Player(Entity):
         # Shield count
         self.shield = 3
 
-        # Energy balls list
-        self.energy_balls = []
+        # Current count
+        self.energy_balls_count = 0
         # Their limit
         self.energy_balls_limit = 3
 
@@ -316,3 +316,11 @@ class Player(Entity):
         # Otherwise set it to normal
         else:
             self.image.set_alpha(255)
+
+    def get_value(self, index):
+        """Get statistic value from an index"""
+        return list(self.stats.values())[index]
+
+    def get_cost(self, index):
+        """Get upgrade cost from an index"""
+        return list(self.upgrade_cost.values())[index]

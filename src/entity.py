@@ -11,6 +11,9 @@ class Entity(pygame.sprite.Sprite):
         # Entity's direction
         self.direction = pygame.math.Vector2()
 
+        # Speed boost
+        self.speed_boost = 0
+
         # Current frame
         self.frame = 0
         # Speed of the animation
@@ -21,6 +24,9 @@ class Entity(pygame.sprite.Sprite):
         # Normalize the direction if entity moves, to prevent speed up
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
+
+        # Add speed boost if entity has one
+        speed += self.speed_boost
 
         # Move the entity, check the collisions
         self.hitbox.x += self.direction.x * speed

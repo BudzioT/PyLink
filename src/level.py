@@ -179,14 +179,17 @@ class Level:
         if style == "heal":
             self.magic.heal(self.player, strength, cost, [self.visible_sprites])
         # Use the flame spell
-        if style == "flame":
+        elif style == "flame":
             self.magic.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
         # Use the shield spell
-        if style == "shield":
+        elif style == "shield":
             self.magic.shield(self.player, cost, [self.visible_sprites])
         # Use the energy ball
-        if style == "energy_ball":
+        elif style == "energy_ball":
             self.magic.energy_ball(self.player, cost, [self.visible_sprites, self.attack_sprites])
+        # Use the spark
+        elif style == "spark":
+            self.magic.spark(self.player, cost, [self.visible_sprites])
 
     def _destroy_magic(self):
         """Destroy the magic spell"""
@@ -225,8 +228,9 @@ class Level:
                                                              [self.visible_sprites])
                             # Destroy the energy ball
                             attack_sprite.kill()
-                            # Remove the old energy ball
-                            self.player.energy_balls.remove(attack_sprite)
+
+                            # Decrease amount of player's balls
+                            self.player.energy_balls_count -= 1
 
                             # Damage the enemy
                             target.get_damage(self.player, attack_sprite.sprite_type)
@@ -255,6 +259,9 @@ class Level:
             self.player.hit_time = pygame.time.get_ticks()
             # Block him from receiving damage constantly
             self.player.vulnerable = False
+
+            # Reset player's speed boost
+            self.player.speed_boost = 0
 
             # Create some particles
             self.animations.create_particles(attack_type, self.player.rect.center,
