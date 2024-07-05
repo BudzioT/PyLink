@@ -1,3 +1,5 @@
+from math import sin
+
 import pygame
 
 
@@ -28,6 +30,17 @@ class Entity(pygame.sprite.Sprite):
 
         # Apply hitbox position
         self.rect.center = self.hitbox.center
+
+    def wave_value(self):
+        """Get value of sinus as image full value alpha"""
+        # Store current sinus
+        value = sin(pygame.time.get_ticks())
+        # If it is beyond the X-Axis, return full alpha
+        if value >= 0:
+            return 255
+        # If it is under, return 0 alpha
+        else:
+            return 0
 
     def _collision(self, direction):
         """Handle entity's collisions"""

@@ -51,12 +51,28 @@ class Enemy(Entity):
         self.attack_time = None
         self.attack_cooldown = 400
 
+        # Vulnerability flag
+        self.vulnerable = True
+        # Last time getting hit
+        self.hit_time = None
+        # Duration of the invincibility
+        self.dodge_duration = 350
+
     def update(self):
         """Update the enemy"""
+        # React on getting hit
+        self.react_on_damage()
+
         # Move the enemy
         self._move(self.speed)
         # Animate it
         self.animate()
+
+        # Check attack cooldown
+        self._attack_cooldown()
+
+        # Check and handle death
+        self.death()
 
     def enemy_update(self, player):
         """Update the enemy only, without other sprites"""
@@ -67,8 +83,10 @@ class Enemy(Entity):
 
     def action(self, player):
         """Make an action based off state"""
+        # Attack the player
         if self.state == "attack":
-            pass
+            self.attack_time = pygame.time.get_ticks()
+        # Move closer to the player
         elif self.state == "move":
             self.direction = self._get_position_from_player(player)[1]
         # Don't do anything
@@ -95,12 +113,60 @@ class Enemy(Entity):
         # Update the enemy's rect
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
+        # If enemy can't be hit, meaning it got hit earlier
+        if not self.vulnerable:
+            # Set the alpha based off current time's sinus
+            alpha = 0
+            self.image.set_alpha(alpha)
+        # Otherwise just set the image to normal
+        else:
+            self.image.set_alpha(255)
+
+    def get_damage(self, player, attack_type):
+        """Get damage when hit by the player"""
+        # If enemy can be hit
+        if self.vulnerable:
+            # Get the direction based off player's position from the enemy
+            self.direction = self._get_position_from_player(player)[1]
+
+            # If enemy was hit by a weapon, get damaged from it
+            if attack_type == "weapon":
+                self.health -= player.get_weapon_damage()
+            # Otherwise deal the damage from a weapon
+            else:
+                pass
+            # Save the last hit's time
+            self.hit_time = pygame.time.get_ticks()
+            # Block the player from hitting the enemy right again
+            self.vulnerable = False
+
+    def death(self):
+        """Check for death and handle it"""
+        if self.health <= 0:
+            self.kill()
+
+    def react_on_damage(self):
+        """React when getting damaged"""
+        # If enemy isn't vulnerable anymore, push it back
+        if not self.vulnerable:
+            # Change direction by negative resistance, meaning a push back
+            self.direction *= -self.resistance
+
     def _attack_cooldown(self):
         """Handle attack cooldown"""
+        # Get current time
+        current_time = pygame.time.get_ticks()
+
         # If enemy can't attack, check the cooldown
         if not self.attack:
-            # Get current time
-            current_time = pygame.time.get_ticks()
+            # If cooldown has passed, allow enemy to attack again
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.attack = True
+        # If enemy isn't vulnerable, check the cooldown again
+        if not self.vulnerable:
+            # If cooldown has passed, make the enemy vulnerable
+            if current_time - self.hit_time >= self.dodge_duration:
+                self.vulnerable = True
 
     def _set_state(self, player):
         """Set state of the enemy"""
@@ -109,6 +175,10 @@ class Enemy(Entity):
 
         # If player is in enemy's attack radius, attack him if its able to
         if distance <= self.attack_radius and self.attack:
+            # If enemy didn't attack yet, set the frame to 0
+            if self.state != "attack":
+                self.frame = 0
+            # Set the state  to attack
             self.state = "attack"
         # If player is in enemy's notice radius, move after him
         elif distance <= self.notice_radius:

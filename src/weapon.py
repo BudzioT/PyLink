@@ -13,6 +13,9 @@ class Weapon(pygame.sprite.Sprite):
         # Get player's and weapon's direction
         self.direction = self._get_direction(player)
 
+        # Set sprite type
+        self.sprite_type = "weapon"
+
         # Create weapon image and load it
         image_path = os.path.join(settings.BASE_PATH,
                                   f"../graphics/weapons/{player.weapon}/{self.direction}.png")

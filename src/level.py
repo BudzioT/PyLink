@@ -24,6 +24,11 @@ class Level:
         # Sprites that can be collided with
         self.object_sprites = pygame.sprite.Group()
 
+        # Sprites that can attack
+        self.attack_sprites = pygame.sprite.Group()
+        # Sprites that can receive damage
+        self.damageable_sprites = pygame.sprite.Group()
+
         # Current active weapon
         self.active_weapon = None
 
@@ -51,6 +56,9 @@ class Level:
         self.visible_sprites.update()
         # Update positions of the enemies
         self.visible_sprites.enemy_update(self.player)
+
+        # Check for collisions resulting in damage
+        self._player_attack()
 
     def _create_map(self):
         """Create the map"""
@@ -99,8 +107,8 @@ class Level:
         elif style == "grass":
             # Choose a random grass image
             random_image = choice(graphics["grass"])
-            Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites],
-                 "grass", random_image)
+            Tile((pos_x, pos_y), [self.visible_sprites, self.object_sprites,
+                                  self.damageable_sprites], "grass", random_image)
         # Create entities
         elif style == "entities":
             # If it is a player, put him here
@@ -123,11 +131,12 @@ class Level:
                 # Squid
                 else:
                     name = "squid"
-                Enemy(name, (pos_x, pos_y), [self.visible_sprites], self.object_sprites)
+                Enemy(name, (pos_x, pos_y), [self.visible_sprites, self.damageable_sprites],
+                      self.object_sprites)
 
     def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
         """Create the weapon"""
-        self.active_weapon = Weapon(self.player, [self.visible_sprites])
+        self.active_weapon = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
 
     def _destroy_weapon(self):
         """Destroy the weapon"""
@@ -143,3 +152,22 @@ class Level:
 
     def _destroy_magic(self):
         """Destroy the magic spell"""
+        pass
+
+    def _player_attack(self):
+        """Logic of player's attacks"""
+        # If there are sprites that can attack
+        if self.attack_sprites:
+            # Go through each of them
+            for attack_sprite in self.attack_sprites:
+                # Check for collisions between attack sprite and damageable ones
+                collisions = pygame.sprite.spritecollide(attack_sprite, self.damageable_sprites, False)
+                # If there is a collision, go through each target
+                if collisions:
+                    for target in collisions:
+                        # If it's a grass, just kill it
+                        if target.sprite_type == "grass":
+                            target.kill()
+                        # If it's an enemy, damage him
+                        else:
+                            target.get_damage(self.player, attack_sprite.sprite_type)

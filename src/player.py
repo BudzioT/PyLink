@@ -97,6 +97,11 @@ class Player(Entity):
         # Move the player
         self._move(self.speed)
 
+    def get_weapon_damage(self):
+        """Get the damage that weapon's deal"""
+        # Return damage dealt by specific weapon
+        return self.stats["attack"] + settings.weapon_info[self.weapon]["damage"]
+
     def _handle_input(self):
         """Set player's action based off input"""
         # If player is attacking, don't handle inputs
@@ -183,8 +188,10 @@ class Player(Entity):
 
         # Handle player attack cooldown
         if self.attack:
+            # Calculate the cooldown by adding base one to the weapon one
+            cooldown = self.attack_cooldown + settings.weapon_info[self.weapon]["cooldown"]
             # If time from the last attack is bigger than the cooldown, allow to attack again
-            if current_time - self.attack_time >= self.attack_cooldown:
+            if current_time - self.attack_time >= cooldown:
                 self.attack = False
                 self.destroy_weapon()
 
