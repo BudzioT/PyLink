@@ -57,7 +57,7 @@ class Settings:
             "raccoon": {"health": 320, "exp": 250, "damage": 40, "attack_type": "claw",
                         "attack_sound": "../audio/attack/claw.wav", "speed": 2, "resistance": 2,
                         "attack_radius": 120, "notice_radius": 400},
-            "spirit": {"health": 130, "exp": 110, "damage": 14, "attack_type": "fire",
+            "spirit": {"health": 130, "exp": 110, "damage": 14, "attack_type": "thunder",
                        "attack_sound": "../audio/attack/fireball.wav", "speed": 4, "resistance": 4,
                        "attack_radius": 90, "notice_radius": 420},
             "bamboo": {"health": 80, "exp": 90, "damage": 12, "attack_type": "leaf_attack",

@@ -10,6 +10,7 @@ from utilities import utilities
 from weapon import Weapon
 from ui import UI
 from enemy import Enemy
+from particles import Animation
 
 
 class Level:
@@ -31,6 +32,9 @@ class Level:
 
         # Current active weapon
         self.active_weapon = None
+
+        # Animations
+        self.animations = Animation()
 
         # User's interface
         self.ui = UI()
@@ -132,7 +136,7 @@ class Level:
                 else:
                     name = "squid"
                 Enemy(name, (pos_x, pos_y), [self.visible_sprites, self.damageable_sprites],
-                      self.object_sprites)
+                      self.object_sprites, self._damage_player)
 
     def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
         """Create the weapon"""
@@ -165,9 +169,23 @@ class Level:
                 # If there is a collision, go through each target
                 if collisions:
                     for target in collisions:
-                        # If it's a grass, just kill it
+                        # If it's a grass, destroy it
                         if target.sprite_type == "grass":
+                            self.animations.grass_particles()
+
+                            # Destroy the grass
                             target.kill()
                         # If it's an enemy, damage him
                         else:
                             target.get_damage(self.player, attack_sprite.sprite_type)
+
+    def _damage_player(self, value, attack_type):
+        """Damage the player based off statistics"""
+        # If player is vulnerable, handle damage
+        if self.player.vulnerable:
+            # Decrease player's health
+            self.player.health -= value
+            # Get the hit time
+            self.player.hit_time = pygame.time.get_ticks()
+            # Block him from receiving damage constantly
+            self.player.vulnerable = False

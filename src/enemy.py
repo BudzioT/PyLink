@@ -7,7 +7,7 @@ from utilities import utilities
 
 class Enemy(Entity):
     """Enemy class"""
-    def __init__(self, name, pos, group, object_sprites):
+    def __init__(self, name, pos, group, object_sprites, damage_player):
         """Initialize the enemy"""
         super().__init__(group)
 
@@ -58,6 +58,9 @@ class Enemy(Entity):
         # Duration of the invincibility
         self.dodge_duration = 350
 
+        # Get the function to damage player
+        self.damage_player = damage_player
+
     def update(self):
         """Update the enemy"""
         # React on getting hit
@@ -86,6 +89,7 @@ class Enemy(Entity):
         # Attack the player
         if self.state == "attack":
             self.attack_time = pygame.time.get_ticks()
+            self.damage_player(self.attack_damage, self.attack_type)
         # Move closer to the player
         elif self.state == "move":
             self.direction = self._get_position_from_player(player)[1]
@@ -116,8 +120,7 @@ class Enemy(Entity):
         # If enemy can't be hit, meaning it got hit earlier
         if not self.vulnerable:
             # Set the alpha based off current time's sinus
-            alpha = 0
-            self.image.set_alpha(alpha)
+            self.image.set_alpha(self.wave_value())
         # Otherwise just set the image to normal
         else:
             self.image.set_alpha(255)

@@ -82,6 +82,13 @@ class Player(Entity):
         # Current player's experience
         self.exp = 120
 
+        # Vulnerability flag
+        self.vulnerable = True
+        # Last hit's time
+        self.hit_time = None
+        # Duration of dodges
+        self.dodge_duration = 500
+
     def update(self):
         """Update player's position"""
         # Update player's action
@@ -208,6 +215,12 @@ class Player(Entity):
             if current_time - self.magic_switch_time >= self.magic_switch_cooldown:
                 self.can_magic_switch = True
 
+        # Handle vulnerability cooldown
+        if not self.vulnerable:
+            # If invincibility cooldown is over, make player vulnerable again
+            if current_time - self.hit_time >= self.dodge_duration:
+                self.vulnerable = True
+
     def _import_assets(self):
         """Import player's assets"""
         # List of player's animations
@@ -264,3 +277,11 @@ class Player(Entity):
         # Set the image and update the rectangle
         self.image = animation[int(self.frame)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
+
+        # If player just got hit, meaning he isn't vulnerable
+        if not self.vulnerable:
+            # Set the alpha to current sinus value
+            self.image.set_alpha(self.wave_value())
+        # Otherwise set it to normal
+        else:
+            self.image.set_alpha(255)
