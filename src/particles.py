@@ -48,6 +48,12 @@ class Animation:
         self.frames = {}
         self._load_frames()
 
+        # Increase shield size by 3 times
+        for num in range(len(self.frames["shield"])):
+            frame = self.frames["shield"][num]
+            self.frames["shield"][num] = pygame.transform.scale(frame, (frame.get_rect().width * 3,
+                                                                        frame.get_rect().height * 3))
+
     def grass_particles(self, pos, group):
         """Create grass particles, animate them"""
         # Get random leaf animation type
@@ -88,6 +94,8 @@ class Animation:
             "flame": utilities.import_folder("../graphics/particles/flame/frames"),
             "heal": utilities.import_folder("../graphics/particles/heal/frames"),
             "aura": utilities.import_folder("../graphics/particles/aura"),
+            "energy_ball": utilities.import_folder("../graphics/particles/energy_ball/frames"),
+            "shield": utilities.import_folder("../graphics/particles/shield/frames"),
 
             # Monster kill
             "squid": utilities.import_folder("../graphics/particles/smoke_orange"),

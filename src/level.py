@@ -13,6 +13,7 @@ from ui import UI
 from enemy import Enemy
 from particles import Animation
 from magic import Magic
+from upgrade import UpgradeMenu
 
 
 class Level:
@@ -50,14 +51,24 @@ class Level:
         # Create the map
         self._create_map()
 
+        # Upgrade menu
+        self.upgrade = UpgradeMenu(self.player)
+
     def run(self):
         """Run the level"""
         # Draw the level
         self._draw()
-        # Update positions
-        self._update()
         # Display player's statistics
         self.ui.display(self.player)
+
+        # If the game is paused, draw the upgrade menu
+        if self.pause:
+            self.upgrade.display()
+
+        # Otherwise update all game mechanics
+        else:
+            # Update positions
+            self._update()
 
     def _draw(self):
         # Draw all level objects
@@ -170,6 +181,9 @@ class Level:
         # Use the flame spell
         if style == "flame":
             self.magic.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
+        # Use the shield spell
+        if style == "shield":
+            self.magic.shield(self.player, cost, [self.visible_sprites])
 
     def _destroy_magic(self):
         """Destroy the magic spell"""
@@ -208,8 +222,18 @@ class Level:
         """Damage the player based off statistics"""
         # If player is vulnerable, handle damage
         if self.player.vulnerable:
-            # Decrease player's health
-            self.player.health -= value
+            # If player has a shield
+            if self.player.shield > 0:
+                # Draw the shield particles
+                self.animations.create_particles("shield", self.player.rect.center,
+                                                 [self.visible_sprites])
+                # Decrease the shield amount
+                self.player.shield -= 1
+            # Otherwise, decrease the health
+            else:
+                # Decrease player's health
+                self.player.health -= value
+
             # Get the hit time
             self.player.hit_time = pygame.time.get_ticks()
             # Block him from receiving damage constantly

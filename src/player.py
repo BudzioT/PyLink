@@ -73,6 +73,9 @@ class Player(Entity):
         # Last magic used time
         self.magic_switch_time = None
 
+        # Shield count
+        self.shield = 3
+
         # Cost of upgrading player's stats
         self.upgrade_cost = {"health": 120, "energy": 100, "attack": 150, "magic": 100, "speed": 100}
 

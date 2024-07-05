@@ -32,6 +32,23 @@ class Magic:
                 # If player has healed not beyond the limit, animate the heal particles
                 self.animations.create_particles("heal", player.rect.center + offset, group)
 
+    def shield(self, player, cost, group):
+        """Cast a shield, defending the player"""
+        # If player has enough energy, cast it
+        if player.energy >= cost:
+            # Drain the player's energy
+            player.energy -= cost
+
+            # Turn on his shield, let him have 3 of them
+            player.shield = 3
+
+    def energy_ball(self, player, cost, group):
+        """Place an energy ball"""
+        # Place it if player has enough energy
+        if player.energy >= cost:
+            # Decrease player's energy
+            player.energy -= cost
+
     def flame(self, player, cost, group):
         """Flame spell, attack the enemy with flame"""
         # If player has enough energy to cast a spell

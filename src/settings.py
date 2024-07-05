@@ -46,7 +46,10 @@ class Settings:
         # Information about magic
         self.magic_info = {
             "flame": {"strength": 5, "cost": 15, "graphic": "../graphics/particles/flame/fire.png"},
-            "heal": {"strength": 15, "cost": 15, "graphic": "../graphics/particles/heal/heal.png"}
+            "heal": {"strength": 15, "cost": 15, "graphic": "../graphics/particles/heal/heal.png"},
+            "energy_ball": {"strength": 20, "cost": 10,
+                            "graphic": "../graphics/particles/energy_ball/energy_ball.png"},
+            "shield": {"strength": 15, "cost": 20, "graphic": "../graphics/particles/shield/shield.png"}
         }
 
         # Information about enemies
