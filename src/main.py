@@ -38,6 +38,16 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
+            if event.type == pygame.KEYDOWN:
+                self._handle_keydown(event)
+
+    def _handle_keydown(self, event):
+        """Handle keydown events"""
+        # Open upgrade menu on 'M' clicked
+        if event.key == pygame.K_m:
+            self.level.open_menu()
+
+
     def _update_surface(self):
         """Update the main surface, draw objects"""
         # Clean the screen

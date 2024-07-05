@@ -73,14 +73,20 @@ class Player(Entity):
         # Last magic used time
         self.magic_switch_time = None
 
+        # Cost of upgrading player's stats
+        self.upgrade_cost = {"health": 120, "energy": 100, "attack": 150, "magic": 100, "speed": 100}
+
         # Player's stats
         self.stats = {"health": 100, "energy": 50, "attack": 10, "magic": 4, "speed": 5}
+        # Player's maximum stats after upgrading
+        self.max_stats = {"health": 300, "energy": 150, "attack": 15, "magic": 10, "speed": 10}
+
         # Current player's health and energy and speed
         self.health = self.stats["health"]
         self.energy = self.stats["energy"]
         self.speed = self.stats["speed"]
         # Current player's experience
-        self.exp = 120
+        self.exp = 500
 
         # Vulnerability flag
         self.vulnerable = True
@@ -111,6 +117,11 @@ class Player(Entity):
         """Get the damage that weapon's deal"""
         # Return damage dealt by specific weapon
         return self.stats["attack"] + settings.weapon_info[self.weapon]["damage"]
+
+    def get_magic_damage(self):
+        """Get damage that is dealt by magic"""
+        # Return damage dealt by magic spell
+        return self.stats["magic"] + settings.magic_info[self.magic]["strength"]
 
     def _handle_input(self):
         """Set player's action based off input"""
@@ -156,7 +167,7 @@ class Player(Entity):
             # Get magic's style (name), strength and cost
             style = list(settings.magic_info.keys())[self.magic_index]
             strength = settings.magic_info[style]["strength"] + self.stats["magic"]
-            cost = settings.magic_info[style]["strength"]
+            cost = settings.magic_info[style]["cost"]
 
             # Create the magic
             self.create_magic(style, strength, cost)
@@ -270,7 +281,7 @@ class Player(Entity):
         """Handle recovering energy"""
         # Recover the energy if it's not full yet
         if self.energy < self.stats["energy"]:
-            self.energy += 0.01 * self.stats["magic"]
+            self.energy += 0.007 * self.stats["magic"]
         # Otherwise just keep it full
         else:
             self.energy = self.stats["energy"]

@@ -7,7 +7,7 @@ from utilities import utilities
 
 class Enemy(Entity):
     """Enemy class"""
-    def __init__(self, name, pos, group, object_sprites, damage_player, death_particles):
+    def __init__(self, name, pos, group, object_sprites, damage_player, death_particles, increase_exp):
         """Initialize the enemy"""
         super().__init__(group)
 
@@ -60,6 +60,8 @@ class Enemy(Entity):
 
         # Get the function to damage player
         self.damage_player = damage_player
+        # And to increase his exp
+        self.increase_exp = increase_exp
 
         # Get the function reference to trigger particles on death
         self.death_particles = death_particles
@@ -138,9 +140,10 @@ class Enemy(Entity):
             # If enemy was hit by a weapon, get damaged from it
             if attack_type == "weapon":
                 self.health -= player.get_weapon_damage()
-            # Otherwise deal the damage from a weapon
+            # Otherwise deal the damage from a magic
             else:
-                pass
+                self.health -= player.get_magic_damage()
+
             # Save the last hit's time
             self.hit_time = pygame.time.get_ticks()
             # Block the player from hitting the enemy right again
@@ -151,6 +154,9 @@ class Enemy(Entity):
         if self.health <= 0:
             # Kill the enemy
             self.kill()
+
+            # Add experience points for the player
+            self.increase_exp(self.exp)
 
             # Create particles
             self.death_particles(self.rect.center, self.name)

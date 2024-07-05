@@ -45,7 +45,7 @@ class Settings:
 
         # Information about magic
         self.magic_info = {
-            "flame": {"strength": 5, "cost": 25, "graphic": "../graphics/particles/flame/fire.png"},
+            "flame": {"strength": 5, "cost": 15, "graphic": "../graphics/particles/flame/fire.png"},
             "heal": {"strength": 15, "cost": 15, "graphic": "../graphics/particles/heal/heal.png"}
         }
 

@@ -22,6 +22,9 @@ class Level:
         # Get game's display
         self.surface = pygame.display.get_surface()
 
+        # Game pause flag
+        self.pause = False
+
         # Sprites that are visible
         self.visible_sprites = YSortCameraGroup()
         # Sprites that can be collided with
@@ -68,6 +71,10 @@ class Level:
 
         # Check for collisions resulting in damage
         self._player_attack()
+
+    def open_menu(self):
+        """Open the game's upgrade menu"""
+        self.pause = not self.pause
 
     def _create_map(self):
         """Create the map"""
@@ -141,7 +148,7 @@ class Level:
                 else:
                     name = "squid"
                 Enemy(name, (pos_x, pos_y), [self.visible_sprites, self.damageable_sprites],
-                      self.object_sprites, self._damage_player, self._death_particles)
+                      self.object_sprites, self._damage_player, self._death_particles, self._increase_exp)
 
     def _create_weapon(self): # FUTURE IDEA - CREATE A BOMB
         """Create the weapon"""
@@ -160,6 +167,9 @@ class Level:
         # Use the healing spell
         if style == "heal":
             self.magic.heal(self.player, strength, cost, [self.visible_sprites])
+        # Use the flame spell
+        if style == "flame":
+            self.magic.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
 
     def _destroy_magic(self):
         """Destroy the magic spell"""
@@ -208,6 +218,10 @@ class Level:
             # Create some particles
             self.animations.create_particles(attack_type, self.player.rect.center,
                                                   [self.visible_sprites])
+
+    def _increase_exp(self, amount):
+        """Increase player's experience points"""
+        self.player.exp += amount
 
     def _death_particles(self, pos, particle_type):
         """Trigger particles when entity died"""

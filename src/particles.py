@@ -7,7 +7,7 @@ from utilities import utilities
 
 class Particle(pygame.sprite.Sprite):
     """Particle effect class"""
-    def __init__(self, pos, group, frames):
+    def __init__(self, pos, group, frames, sprite_type=None):
         """Initialize the particle"""
         super().__init__(group)
 
@@ -20,6 +20,9 @@ class Particle(pygame.sprite.Sprite):
         self.image = self.frames[self.frame]
         # Rectangle of particle
         self.rect = self.image.get_rect(center=pos)
+
+        # Sprite type
+        self.sprite_type = "magic"
 
     def update(self):
         """Update the particle"""
