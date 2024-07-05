@@ -1,4 +1,7 @@
-import pygame, sys
+import sys
+import os
+
+import pygame
 
 from settings import settings
 from level import Level
@@ -16,6 +19,16 @@ class Game:
         # Level of the game
         self.level = Level()
 
+        # Main music
+        self.music = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/main.ogg"))
+        self.music.set_volume(0.4)
+        # Play it in loop
+        self.music.play(loops=-1)
+
+        # Load the death sound and lower its volume
+        self.death_sound = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/death.wav"))
+        self.death_sound.set_volume(0.2)
+
         # Create timer for calculating FPS
         self.timer = pygame.time.Clock()
 
@@ -28,6 +41,12 @@ class Game:
             self._update_surface()
             # Update objects
             self._update_objects()
+
+            # Reset the game if player lost
+            if self.level.end:
+                self.level = Level()
+                self.death_sound.play()
+
             # Remain set amount of FPS
             self.timer.tick(settings.FPS)
 
@@ -51,7 +70,7 @@ class Game:
     def _update_surface(self):
         """Update the main surface, draw objects"""
         # Clean the screen
-        self.screen.fill("black")
+        self.screen.fill(settings.WATER_COLOR)
         # Draw the level and update it
         self.level.run()
         # Update the main surface

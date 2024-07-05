@@ -61,7 +61,7 @@ class UpgradeMenu:
         # Check if player can select any of the options
         if self.can_select:
             # Move to the right option if players wants, check the index to not go too far
-            if keys[pygame.K_RIGHT] or keys[pygame.K_a] and self.select_index < self.attribute_number:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d] and self.select_index < self.attribute_number - 1:
                 # Increase the selection index
                 self.select_index += 1
                 # Get select time
@@ -70,7 +70,7 @@ class UpgradeMenu:
                 self.can_select = False
 
             # Move to left, make sure to not go under first option
-            elif keys[pygame.K_LEFT] or keys[pygame.K_d] and self.select_index >= 1:
+            elif keys[pygame.K_LEFT] or keys[pygame.K_a] and self.select_index >= 1:
                 # Decrease the selection index
                 self.select_index -= 1
                 self.select_time = pygame.time.get_ticks()
@@ -80,6 +80,8 @@ class UpgradeMenu:
             if keys[pygame.K_SPACE]:
                 self.select_time = pygame.time.get_ticks()
                 self.can_select = False
+                # Trigger item, try to upgrade statistics of the player
+                self.item_list[self.select_index].trigger(self.player)
 
     def _select_cooldown(self):
         """Handle the cooldown of attribute selection"""
@@ -119,20 +121,71 @@ class Item:
 
     def display(self, surface, selection_number, name, value, max_value, cost):
         """Display the item with certain information"""
-        # Draw the background
-        pygame.draw.rect(surface, settings.BG_COLOR, self.rect)
+        # Draw lighter background when user selected this item
+        if self.index == selection_number:
+            pygame.draw.rect(surface, settings.UPGRADE_SELECT_BG_COLOR, self.rect)
+            pygame.draw.rect(surface, settings.BORDER_COLOR, self.rect, 4)
+        # Otherwise draw normal background
+        else:
+            pygame.draw.rect(surface, settings.BG_COLOR, self.rect)
+            pygame.draw.rect(surface, settings.BORDER_COLOR, self.rect, 4)
+
+        # User selected this item flag
+        select = self.index == selection_number
 
         # Display the text
-        self.display_text(surface, name, cost, selection_number)
+        self.display_text(surface, name, cost, select)
+        # Display the progress bar
+        self.display_bar(surface, value, max_value, select)
 
     def display_text(self, surface, name, cost, select):
         """Display all the text"""
+        # Set the text color depending on, if player selected this option
+        text_color = settings.TEXT_SELECT_COLOR if select else settings.TEXT_COLOR
+
         # Get statistic title text image and rectangle
-        title_surface = self.font.render(name, False, settings.TEXT_COLOR)
+        title_surface = self.font.render(name, False, text_color)
         title_rect = title_surface.get_rect(midtop=self.rect.midtop + pygame.math.Vector2(0, 20))
 
         # Get its cost and cost's rect
-        cost_surface = self.font.render(f"{int(cost)}", False, settings.TEXT_COLOR)
+        cost_surface = self.font.render(f"{int(cost)}", False, text_color)
+        cost_rect = cost_surface.get_rect(midbottom=self.rect.midbottom - pygame.math.Vector2(0, 20))
 
         # Draw the text
         surface.blit(title_surface, title_rect)
+        surface.blit(cost_surface, cost_rect)
+
+    def display_bar(self, surface, value, max_value, select):
+        """Display the bar of upgrade progress"""
+        # Set the bar's dimensions
+        top = self.rect.midtop + pygame.math.Vector2(0, 60)
+        bottom = self.rect.midbottom - pygame.math.Vector2(0, 60)
+        # Set the color based off the selection
+        color = settings.BAR_SELECT_COLOR if select else settings.BAR_COLOR
+
+        height = bottom[1] - top[1]
+        progress = (value / max_value) * height
+        progress_rect = pygame.Rect(top[0] - 15, bottom[1] - progress, 30, 10)
+
+        # Draw the progress line
+        pygame.draw.line(surface, color, top, bottom, 5)
+        # Draw the progress rectangle
+        pygame.draw.rect(surface, color, progress_rect)
+
+    def trigger(self, player):
+        """Trigger the item"""
+        # Get the statistic that player wants to upgrade
+        upgrade = list(player.stats.keys())[self.index]
+
+        # If player has enough experience points and his stat isn't at max value already, upgrade the stat
+        if player.exp >= player.upgrade_cost[upgrade] and player.stats[upgrade] < player.max_stats[upgrade]:
+            # Decrease his experience points
+            player.exp -= player.upgrade_cost[upgrade]
+            # Upgrade his stat by 1.15
+            player.stats[upgrade] *= 1.15
+            # Increase the next upgrade cost of this stat by 1.45
+            player.upgrade_cost[upgrade] *= 1.45
+
+            # Don't allow the player to exceed the max value of the stat
+            if player.stats[upgrade] > player.max_stats[upgrade]:
+                player.stats[upgrade] = player.max_stats[upgrade]

@@ -54,6 +54,9 @@ class Level:
         # Upgrade menu
         self.upgrade = UpgradeMenu(self.player)
 
+        # End of the game
+        self.end = False
+
     def run(self):
         """Run the level"""
         # Draw the level
@@ -262,6 +265,9 @@ class Level:
 
             # Reset player's speed boost
             self.player.speed_boost = 0
+
+            if self.player.health <= 0:
+                self.end = True
 
             # Create some particles
             self.animations.create_particles(attack_type, self.player.rect.center,

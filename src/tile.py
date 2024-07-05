@@ -13,6 +13,9 @@ class Tile(pygame.sprite.Sprite):
         # Set the type of sprite
         self.sprite_type = sprite_type
 
+        # Y-Axis offset of hitbox based off sprite type
+        y_hitbox_offset = settings.HITBOX_OFFSETS[sprite_type]
+
         # Load tile image
         self.image = surface
 
@@ -24,4 +27,4 @@ class Tile(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(topleft=(pos[0], pos[1] - settings.SIZE))
 
         # Hitbox of the tile
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect.inflate(0, y_hitbox_offset)

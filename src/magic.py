@@ -13,6 +13,15 @@ class Magic:
         # Get the animations
         self.animations = animations
 
+        # Load the sound effects
+        self.sounds = {
+            "heal": pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/heal.wav")),
+            "flame": pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/Fire.wav")),
+            "spark": pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/spark.wav")),
+            "energy_ball": pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/energy_ball.wav")),
+            "shield": pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/shield.wav")),
+        }
+
     def heal(self, player, strength, cost, group):
         """Heal spell, heal the player"""
         # If player has enough energy to use heal spell
@@ -21,6 +30,8 @@ class Magic:
             player.health += strength
             # Drain his energy
             player.energy -= cost
+
+            self.sounds["heal"].play()
 
             # Animate the aura particles
             self.animations.create_particles("aura", player.rect.center, group)
@@ -39,6 +50,8 @@ class Magic:
         if player.energy >= cost and player.energy_balls_count < 3:
             # Decrease player's energy
             player.energy -= cost
+
+            self.sounds["spark"].play()
 
             # Boost the player's speed by 2
             player.speed_boost = 2
@@ -80,6 +93,8 @@ class Magic:
             # Drain the player's energy
             player.energy -= cost
 
+            self.sounds["shield"].play()
+
             # Turn on his shield, let him have 3 of them
             player.shield = 3
 
@@ -89,6 +104,8 @@ class Magic:
         if player.energy >= cost and player.energy_balls_count < 3:
             # Decrease player's energy
             player.energy -= cost
+
+            self.sounds["energy_ball"].play()
 
             # Create the energy ball
             ball = EnergyBall(player.rect.center, group)
@@ -102,6 +119,8 @@ class Magic:
         if player.energy >= cost:
             # Decrease his energy
             player.energy -= cost
+
+            self.sounds["flame"].play()
 
             direction = self._get_direction(player)
 

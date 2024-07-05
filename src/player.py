@@ -24,7 +24,7 @@ class Player(Entity):
         self.state = "down"
 
         # Hitbox of the player
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(-4, settings.HITBOX_OFFSETS["player"])
 
         # Get object sprites
         self.object_sprites = object_sprites
@@ -44,6 +44,10 @@ class Player(Entity):
         self.create_weapon = create_weapon
         # Destroy weapon function reference
         self.destroy_weapon = destroy_weapon
+
+        # Weapon attack sound
+        self.weapon_sound = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/sword.wav"))
+        self.weapon_sound.set_volume(0.4)
 
         # Create and destroy magic function references
         self.create_magic = create_magic
@@ -74,7 +78,7 @@ class Player(Entity):
         self.magic_switch_time = None
 
         # Shield count
-        self.shield = 3
+        self.shield = 0
 
         # Current count
         self.energy_balls_count = 0
@@ -94,7 +98,7 @@ class Player(Entity):
         self.energy = self.stats["energy"]
         self.speed = self.stats["speed"]
         # Current player's experience
-        self.exp = 500
+        self.exp = 100
 
         # Vulnerability flag
         self.vulnerable = True
@@ -119,7 +123,7 @@ class Player(Entity):
         self._recover_energy()
 
         # Move the player
-        self._move(self.speed)
+        self._move(self.stats["speed"])
 
     def get_weapon_damage(self):
         """Get the damage that weapon's deal"""
@@ -165,6 +169,8 @@ class Player(Entity):
             self.attack = True
             self.attack_time = pygame.time.get_ticks()
             self.create_weapon()
+            # Play the physical attack sound
+            self.weapon_sound.play()
 
         # Magic attack on L or X
         elif keys[pygame.K_l] or keys[pygame.K_x]:

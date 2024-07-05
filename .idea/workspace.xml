@@ -5,23 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="217a6f28-3926-4444-87c8-082bf74cbd00" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/frames/6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/particles/spark/spark.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/weapons/fork/down.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/graphics/weapons/fork/full.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/Fire.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/attack/claw.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/attack/fireball.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/attack/slash.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/death.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/energy_ball.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/heal.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/hit.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/main.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/shield.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/spark.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audio/sword.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/enemy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/enemy.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/level.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/level.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/magic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/magic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/particles.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/particles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tile.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/upgrade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/upgrade.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,7 +60,7 @@
     "Python.utilities.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Pobrane/Github_projects/PyZelda/graphics/particles/spark",
+    "last_opened_file_path": "D:/Pobrane/Github_projects/PyZelda/audio",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -68,13 +71,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Pobrane\Github_projects\PyZelda\audio" />
+      <recent name="D:\Pobrane\Github_projects\PyZelda" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\particles\spark" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\particles\spark\frames" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\weapons\fork" />
-      <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\weapons\stick" />
-      <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\particles\shield" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Pobrane\Github_projects\PyZelda\audio" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\weapons\stick" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\particles\shield\frames" />
       <recent name="D:\Pobrane\Github_projects\PyZelda\graphics\particles\shield" />
@@ -125,7 +129,7 @@
       <updated>1720080397155</updated>
       <workItem from="1720080398507" duration="7500000" />
       <workItem from="1720088037220" duration="31417000" />
-      <workItem from="1720162766898" duration="26347000" />
+      <workItem from="1720162766898" duration="30309000" />
     </task>
     <servers />
   </component>
@@ -133,7 +137,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PyZelda$main.coverage" NAME="main Coverage Results" MODIFIED="1720191341835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PyZelda$main.coverage" NAME="main Coverage Results" MODIFIED="1720195328136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/PyZelda$player.coverage" NAME="player Coverage Results" MODIFIED="1720086809949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/PyZelda$level.coverage" NAME="level Coverage Results" MODIFIED="1720095910961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/PyZelda$utilities.coverage" NAME="utilities Coverage Results" MODIFIED="1720095878222" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

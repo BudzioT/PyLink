@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 from settings import settings
@@ -66,6 +68,16 @@ class Enemy(Entity):
         # Get the function reference to trigger particles on death
         self.death_particles = death_particles
 
+        # Sound effects
+        self.death_sound = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/death.wav"))
+        self.hit_sound = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, "../audio/hit.wav"))
+        self.attack_sound = pygame.mixer.Sound(os.path.join(settings.BASE_PATH, enemy_info["attack_sound"]))
+
+        # Lower the volume of sounds
+        self.death_sound.set_volume(0.2)
+        self.hit_sound.set_volume(0.2)
+        self.attack_sound.set_volume(0.25)
+
     def update(self):
         """Update the enemy"""
         # React on getting hit
@@ -95,6 +107,8 @@ class Enemy(Entity):
         if self.state == "attack":
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
+            # Play the sound
+            self.attack_sound.play()
         # Move closer to the player
         elif self.state == "move":
             self.direction = self._get_position_from_player(player)[1]
@@ -137,6 +151,9 @@ class Enemy(Entity):
             # Get the direction based off player's position from the enemy
             self.direction = self._get_position_from_player(player)[1]
 
+            # Play the hit sound
+            self.hit_sound.play()
+
             # If enemy was hit by a weapon, get damaged from it
             if attack_type == "weapon":
                 self.health -= player.get_weapon_damage()
@@ -154,6 +171,9 @@ class Enemy(Entity):
         if self.health <= 0:
             # Kill the enemy
             self.kill()
+
+            # Play the death sound
+            self.death_sound.play()
 
             # Add experience points for the player
             self.increase_exp(self.exp)

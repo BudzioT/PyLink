@@ -13,6 +13,14 @@ class Settings:
         # One tile size
         self.SIZE = 64
 
+        # Hitbox offsets
+        self.HITBOX_OFFSETS = {
+            "player": -26,
+            "object": -40,
+            "grass": -10,
+            "invisible": 0
+        }
+
         # Base file path
         self.BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
